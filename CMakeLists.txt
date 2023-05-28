@@ -13,7 +13,7 @@ add_executable(wch_demo
     src/main.cpp
 )
 target_include_directories(wch_demo PRIVATE
-    src/Startup
+    src/ch32v003/startup
 )
 
 target_compile_options(wch_demo PRIVATE 
@@ -52,7 +52,7 @@ target_link_options(wch_demo PRIVATE
     --specs=nano.specs
     --specs=nosys.specs
     -Wl,--print-memory-usage
-    -T "${CMAKE_SOURCE_DIR}/src/Ld/Link.ld"
+    -T "${CMAKE_SOURCE_DIR}/src/ch32v003/Ld/Link.ld"
     -Wl,--gc-sections
     -Wl,-Map=wch_demo.map
     -nostartfiles
