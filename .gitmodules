@@ -1,0 +1,3 @@
+[submodule "src/cppreg"]
+	path = src/cppreg
+	url = https://github.com/nicocvn/cppreg
