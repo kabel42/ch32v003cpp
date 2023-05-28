@@ -3,9 +3,6 @@ cmake_minimum_required(VERSION 3.20)
 project(wch_demo VERSION 0.1.0 LANGUAGES C CXX ASM)
 set(CMAKE_CXX_STANDARD 14)
 
-set(CMAKE_C_COMPILER "riscv64-elf-gcc")
-set(CMAKE_CXX_COMPILER "riscv64-elf-gcc")
-
 add_subdirectory(src/cppreg build/cppreg)
 
 add_executable(wch_demo 
@@ -20,7 +17,7 @@ target_compile_options(wch_demo PRIVATE
     -march=rv32ec
     -mabi=ilp32e
     -msmall-data-limit=0
-    -msave-restore
+    #-msave-restore
     -Os
     -fmessage-length=0
     -fsigned-char
@@ -39,7 +36,7 @@ target_link_options(wch_demo PRIVATE
     -march=rv32ec
     -mabi=ilp32e
     -msmall-data-limit=0
-    -msave-restore
+    #-msave-restore
     -Os
     -fmessage-length=0
     -fsigned-char
@@ -65,4 +62,5 @@ set_target_properties(wch_demo PROPERTIES
 
 add_custom_command(TARGET wch_demo POST_BUILD
     COMMAND ${CMAKE_OBJCOPY} ARGS -O ihex "$<TARGET_FILE:wch_demo>" wch_demo.hex
+    COMMAND ${CMAKE_OBJCOPY} ARGS -O binary "$<TARGET_FILE:wch_demo>" wch_demo.bin
 )

@@ -5,11 +5,11 @@
 */
 
 #include <stdint.h>
+#include <stddef.h>
+#include "startup_ch32v00x.h"
 
-#ifdef CPLUSPLUS
 // Method to call the C++ constructors
 void __libc_init_array(void);
-#endif
 
 int main() __attribute__((used));
 void SystemInit( void ) __attribute__((used));
@@ -19,7 +19,6 @@ extern uint32_t * _ebss;
 extern uint32_t * _data_lma;
 extern uint32_t * _data_vma;
 extern uint32_t * _edata;
-
 
 // If you don't override a specific handler, it will just spin forever.
 void DefaultIRQHandler( void )
@@ -153,11 +152,9 @@ asm volatile(
 	addi a1, a1, 4\n\
 	bne a1, a2, 1b\n\
 2:\n"
-#ifdef CPLUSPLUS
 	// Call __libc_init_array function
 "	call %0 \n\t"
 : : "i" (__libc_init_array) :
-#endif
 );
 
 	//TODO: SETUP_SYSTICK_HCLK
@@ -170,7 +167,6 @@ asm volatile(
 
 // C++ Support
 
-#ifdef CPLUSPLUS
 // This is required to allow pure virtual functions to be defined.
 extern void __cxa_pure_virtual() { while (1); }
 
@@ -193,4 +189,3 @@ void __libc_init_array(void)
 	for (i = 0; i < count; i++)
 		__init_array_start[i]();
 }
-#endif
