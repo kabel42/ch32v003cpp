@@ -1,0 +1,8 @@
+BasedOnStyle: Microsoft
+AllowShortBlocksOnASingleLine: Empty
+AllowShortEnumsOnASingleLine: Yes
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortLambdasOnASingleLine: Inline
+AllowShortLoopsOnASingleLine: Yes
+ColumnLimit: 0
+NamespaceIndentation: All

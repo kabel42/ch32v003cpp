@@ -63,4 +63,5 @@ set_target_properties(wch_demo PROPERTIES
 add_custom_command(TARGET wch_demo POST_BUILD
     COMMAND ${CMAKE_OBJCOPY} ARGS -O ihex "$<TARGET_FILE:wch_demo>" wch_demo.hex
     COMMAND ${CMAKE_OBJCOPY} ARGS -O binary "$<TARGET_FILE:wch_demo>" wch_demo.bin
+    COMMAND ${CMAKE_OBJDUMP} ARGS -S "$<TARGET_FILE:wch_demo>" > wch_demo.lst
 )
