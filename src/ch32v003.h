@@ -1697,11 +1697,34 @@ namespace PFIC
     };
     struct IENR1 : PackedRegister<PFIC_pack, RegBitSize::b32, 256 * 8> // Interrupt Setting Register
     {
-        using INTEN = Field<IENR1, 20, 12, write_only>; // INTEN
+        using SYSTICK = Field<IENR1, 1, 12, write_only>;
+        using SOFTWARE  = Field<IENR1, 1, 14, write_only>;
+        using WWDG  = Field<IENR1, 1, 16, write_only>;
+        using PVD  = Field<IENR1, 1, 17, write_only>;
+        using FLASH  = Field<IENR1, 1, 18, write_only>;
+        using RCC  = Field<IENR1, 1, 19, write_only>;
+        using EXTI  = Field<IENR1, 1, 20, write_only>;
+        using AWU  = Field<IENR1, 1, 21, write_only>;
+        using DMA1_CH1  = Field<IENR1, 1, 22, write_only>;
+        using DMA1_CH2  = Field<IENR1, 1, 23, write_only>;
+        using DMA1_CH3  = Field<IENR1, 1, 24, write_only>;
+        using DMA1_CH4  = Field<IENR1, 1, 25, write_only>;
+        using DMA1_CH5  = Field<IENR1, 1, 26, write_only>;
+        using DMA1_CH6  = Field<IENR1, 1, 27, write_only>;
+        using DMA1_CH7  = Field<IENR1, 1, 28, write_only>;
+        using ADC  = Field<IENR1, 1, 29, write_only>;
+        using I2C1EV  = Field<IENR1, 1, 30, write_only>;
+        using I2C1ER  = Field<IENR1, 1, 31, write_only>;
     };
     struct IENR2 : PackedRegister<PFIC_pack, RegBitSize::b32, 260 * 8> // Interrupt Setting Register
     {
-        using INTEN = Field<IENR2, 32, 0, write_only>; // INTEN
+        using USART = Field<IENR2, 1, 0, write_only>;
+        using SPI = Field<IENR2, 1, 1, write_only>;
+        using TIM1_BRK = Field<IENR2, 1, 2, write_only>;
+        using TIM1_UP = Field<IENR2, 1, 3, write_only>;
+        using TIM1_TRG_COM = Field<IENR2, 1, 4, write_only>;
+        using TIM1_CC = Field<IENR2, 1, 5, write_only>;
+        using TIM2 = Field<IENR2, 1, 6, write_only>;
     };
     struct IENR3 : PackedRegister<PFIC_pack, RegBitSize::b32, 264 * 8> // Interrupt Setting Register
     {
