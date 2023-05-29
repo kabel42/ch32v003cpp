@@ -159,6 +159,10 @@ asm volatile(
 
 	//TODO: SETUP_SYSTICK_HCLK
 
+	// setup debug
+	*DMDATA1 = 0x0;
+	*DMDATA0 = 0x80;
+
 	// set mepc to be main as the root app.
 asm volatile(
 "	csrw mepc, %[main]\n"
@@ -188,4 +192,45 @@ void __libc_init_array(void)
 	count = __init_array_end - __init_array_start;
 	for (i = 0; i < count; i++)
 		__init_array_start[i]();
+}
+
+//           MSB .... LSB
+// DMDATA0: char3 char2 char1 [status word]
+// where [status word] is:
+//   b7 = is a "printf" waiting?
+//   b0..b3 = # of bytes in printf (+4).  (4 or higher indicates a print of some kind)
+int _write(int fd, const char *buf, int size) 
+{
+	char buffer[4] = { 0 };
+	int place = 0;
+	uint32_t timeout = 160000; // Give up after ~40ms
+	while( place < size )
+	{
+		int tosend = size - place;
+		if( tosend > 7 ) tosend = 7;
+
+		while( ((*DMDATA0) & 0x80) )
+			if( timeout-- == 0 ) return place;
+		timeout = 160000;
+
+		int t = 3;
+		while( t < tosend )
+		{
+			buffer[t-3] = buf[t+place];
+			t++;
+		}
+		*DMDATA1 = *(uint32_t*)&(buffer[0]);
+		t = 0;
+		while( t < tosend && t < 3 )
+		{
+			buffer[t+1] = buf[t+place];
+			t++;
+		}
+		buffer[0] = 0x80 | (tosend + 4);
+		*DMDATA0 = *(uint32_t*)&(buffer[0]);
+
+		//buf += tosend;
+		place += tosend;
+	}
+	return size;
 }

@@ -2077,4 +2077,16 @@ namespace Clock
     }
 } // namespace Clock
 
+namespace debug
+{
+    #define DMDATA0 ((volatile uint32_t*)0xe00000f4)
+    #define DMDATA1 ((volatile uint32_t*)0xe00000f8)
+
+    static inline void WaitForDebuggerToAttach()
+    {
+        while (((*DMDATA0) & 0x80))
+            ;
+    }
+} // namespace debug
+
 #endif
