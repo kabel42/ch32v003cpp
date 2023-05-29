@@ -1,3 +1,6 @@
+#ifndef CH32V003_h
+#define CH32V003_h
+
 #include <cppreg.h>
 using namespace cppreg;
 
@@ -2024,10 +2027,12 @@ namespace GPIO
 
 namespace SysTick
 {
-    void DelayTicks(uint32_t n)
+    static inline void DelayTicks(uint32_t n)
     {
         uint32_t targend = PFIC::STK_CNTL::CNTL::read() + n;
         while (((int32_t)(PFIC::STK_CNTL::CNTL::read() - targend)) < 0)
             ;
     }
 } // namespace SysTick
+
+#endif
