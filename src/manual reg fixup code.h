@@ -34,7 +34,7 @@
 
 namespace SysTick
 {
-    void DelayTicks(uint32_t n)
+    void delayTicks(uint32_t n)
     {
         uint32_t targend = PFIC::STK_CNTL::CNTL::read() + n;
         while (((int32_t)(PFIC::STK_CNTL::CNTL::read() - targend)) < 0)

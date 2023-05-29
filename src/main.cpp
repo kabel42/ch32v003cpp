@@ -3,18 +3,17 @@ using namespace cppreg;
 
 int main(void)
 {
-    // init systick
-    PFIC::STK_CTLR::merge_write<PFIC::STK_CTLR::STE, 1>().with<PFIC::STK_CTLR::STCLK, 1>().done();
+    SysTick::init(0);
     // enable GPIOC
     RCC::APB2PCENR::IOPCEN::write<1>();
     // set GPIOC0 as output
     GPIOC::CFGLR::MODE0::write<GPIO::GPIO_CFGLR_OUT_10Mhz_PP>();
-
+    uint32_t time = SysTick::getSystick();
     while (true)
     {
         GPIOC::BSHR::BS0::write<1>();
-        SysTick::DelayTicks(24 * 1000 * 100);
+        SysTick::delayUntil(&time, SysTick::msToTicks(500));
         GPIOC::BSHR::BR0::write<1>();
-        SysTick::DelayTicks(24 * 1000 * 100);
+        SysTick::delayUntil(&time, SysTick::msToTicks(500));
     }
 }

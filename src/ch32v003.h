@@ -2027,11 +2027,53 @@ namespace GPIO
 
 namespace SysTick
 {
-    static inline void DelayTicks(uint32_t n)
+    static uint32_t ticksPerUs = 3;
+    static inline void init(bool pll)
     {
-        uint32_t targend = PFIC::STK_CNTL::CNTL::read() + n;
-        while (((int32_t)(PFIC::STK_CNTL::CNTL::read() - targend)) < 0)
+        PFIC::STK_CTLR::merge_write<PFIC::STK_CTLR::STE, 1>().with<PFIC::STK_CTLR::STCLK, 1>().done();
+        RCC::CFGR0::merge_write<RCC::CFGR0::SW, 0>().with<RCC::CFGR0::HPRE, 0>().with<RCC::CFGR0::PLLSRC, 0>().done();
+        if (pll)
+        {
+            RCC::CTLR::merge_write<RCC::CTLR::HSION, 1>().with<RCC::CTLR::HSITRIM, 0x10>().with<RCC::CTLR::PLLON, 1>().done();
+            FLASH::ACTLR::LATENCY::write<1>();
+            RCC::INTR::merge_write<RCC::INTR::LSIRDYC, 1>().with<RCC::INTR::HSIRDYC, 1>().with<RCC::INTR::HSERDYC, 1>().with<RCC::INTR::PLLRDYC, 1>().with<RCC::INTR::CSSC, 1>().done();
+            while (RCC::CTLR::PLLRDY::read() == 0)
+                ;
+            RCC::CFGR0::SW::write<0b10>();
+            while (RCC::CFGR0::SWS::read() != 0b10)
+                ;
+            ticksPerUs = 48;
+        }
+        else
+        {
+            RCC::CTLR::merge_write<RCC::CTLR::HSION, 1>().with<RCC::CTLR::HSITRIM, 0x10>().with<RCC::CTLR::PLLON, 0>().done();
+            FLASH::ACTLR::LATENCY::write<0>();
+            ticksPerUs = 24;
+        }
+    }
+    static inline uint32_t getSystick()
+    {
+        return PFIC::STK_CNTL::CNTL::read();
+    }
+    static inline void delayTicks(uint32_t n)
+    {
+        uint32_t targend = getSystick() + n;
+        while (((int32_t)(getSystick() - targend)) < 0)
             ;
+    }
+    static inline void delayUntil(uint32_t *last, uint32_t diff)
+    {
+        *last += diff;
+        while (((int32_t)(getSystick() - *last)) < 0)
+            ;
+    }
+    static inline uint32_t msToTicks(uint32_t ms)
+    {
+        return ms * ticksPerUs * 1000;
+    }
+    static inline uint32_t usToTicks(uint32_t us)
+    {
+        return us * ticksPerUs;
     }
 } // namespace SysTick
 
