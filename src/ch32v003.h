@@ -2112,4 +2112,39 @@ namespace debug
     }
 } // namespace debug
 
+extern "C"
+{
+/*********************************************************************
+ * @fn      __enable_irq
+ *
+ * @brief   Enable Global Interrupt
+ *
+ * @return  none
+ */
+static inline void __enable_irq()
+{
+  uint32_t result;
+
+  __asm volatile("csrr %0," "mstatus": "=r"(result));
+  result |= 0x88;
+  __asm volatile ("csrw mstatus, %0" : : "r" (result) );
+}
+
+/*********************************************************************
+ * @fn      __disable_irq
+ *
+ * @brief   Disable Global Interrupt
+ *
+ * @return  none
+ */
+static inline void __disable_irq()
+{
+  uint32_t result;
+
+  __asm volatile("csrr %0," "mstatus": "=r"(result));
+  result &= ~0x88;
+  __asm volatile ("csrw mstatus, %0" : : "r" (result) );
+}
+}
+
 #endif
