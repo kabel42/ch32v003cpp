@@ -1698,23 +1698,23 @@ namespace PFIC
     struct IENR1 : PackedRegister<PFIC_pack, RegBitSize::b32, 256 * 8> // Interrupt Setting Register
     {
         using SYSTICK = Field<IENR1, 1, 12, write_only>;
-        using SOFTWARE  = Field<IENR1, 1, 14, write_only>;
-        using WWDG  = Field<IENR1, 1, 16, write_only>;
-        using PVD  = Field<IENR1, 1, 17, write_only>;
-        using FLASH  = Field<IENR1, 1, 18, write_only>;
-        using RCC  = Field<IENR1, 1, 19, write_only>;
-        using EXTI  = Field<IENR1, 1, 20, write_only>;
-        using AWU  = Field<IENR1, 1, 21, write_only>;
-        using DMA1_CH1  = Field<IENR1, 1, 22, write_only>;
-        using DMA1_CH2  = Field<IENR1, 1, 23, write_only>;
-        using DMA1_CH3  = Field<IENR1, 1, 24, write_only>;
-        using DMA1_CH4  = Field<IENR1, 1, 25, write_only>;
-        using DMA1_CH5  = Field<IENR1, 1, 26, write_only>;
-        using DMA1_CH6  = Field<IENR1, 1, 27, write_only>;
-        using DMA1_CH7  = Field<IENR1, 1, 28, write_only>;
-        using ADC  = Field<IENR1, 1, 29, write_only>;
-        using I2C1EV  = Field<IENR1, 1, 30, write_only>;
-        using I2C1ER  = Field<IENR1, 1, 31, write_only>;
+        using SOFTWARE = Field<IENR1, 1, 14, write_only>;
+        using WWDG = Field<IENR1, 1, 16, write_only>;
+        using PVD = Field<IENR1, 1, 17, write_only>;
+        using FLASH = Field<IENR1, 1, 18, write_only>;
+        using RCC = Field<IENR1, 1, 19, write_only>;
+        using EXTI = Field<IENR1, 1, 20, write_only>;
+        using AWU = Field<IENR1, 1, 21, write_only>;
+        using DMA1_CH1 = Field<IENR1, 1, 22, write_only>;
+        using DMA1_CH2 = Field<IENR1, 1, 23, write_only>;
+        using DMA1_CH3 = Field<IENR1, 1, 24, write_only>;
+        using DMA1_CH4 = Field<IENR1, 1, 25, write_only>;
+        using DMA1_CH5 = Field<IENR1, 1, 26, write_only>;
+        using DMA1_CH6 = Field<IENR1, 1, 27, write_only>;
+        using DMA1_CH7 = Field<IENR1, 1, 28, write_only>;
+        using ADC = Field<IENR1, 1, 29, write_only>;
+        using I2C1EV = Field<IENR1, 1, 30, write_only>;
+        using I2C1ER = Field<IENR1, 1, 31, write_only>;
     };
     struct IENR2 : PackedRegister<PFIC_pack, RegBitSize::b32, 260 * 8> // Interrupt Setting Register
     {
@@ -2102,8 +2102,8 @@ namespace Clock
 
 namespace debug
 {
-    #define DMDATA0 ((volatile uint32_t*)0xe00000f4)
-    #define DMDATA1 ((volatile uint32_t*)0xe00000f8)
+#define DMDATA0 ((volatile uint32_t *)0xe00000f4)
+#define DMDATA1 ((volatile uint32_t *)0xe00000f8)
 
     static inline void WaitForDebuggerToAttach()
     {
