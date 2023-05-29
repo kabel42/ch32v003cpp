@@ -2025,7 +2025,7 @@ namespace GPIO
     } GPIO_CFGLR_PIN_MODE_Typedef;
 }
 
-namespace SysTick
+namespace Clock
 {
     static uint32_t ticksPerUs = 3;
     static inline void init(bool pll)
@@ -2075,6 +2075,6 @@ namespace SysTick
     {
         return us * ticksPerUs;
     }
-} // namespace SysTick
+} // namespace Clock
 
 #endif

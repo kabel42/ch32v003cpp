@@ -32,7 +32,7 @@
     } GPIO_CFGLR_PIN_MODE_Typedef;
 }
 
-namespace SysTick
+namespace Clock
 {
     void delayTicks(uint32_t n)
     {
@@ -40,5 +40,5 @@ namespace SysTick
         while (((int32_t)(PFIC::STK_CNTL::CNTL::read() - targend)) < 0)
             ;
     }
-} // namespace SysTick
+} // namespace Clock
 
