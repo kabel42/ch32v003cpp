@@ -255,6 +255,8 @@ int _lseek(int file, int ptr, int dir) {
 
 void _exit(int status) {
   __asm("EBREAK");
+  while(1);
+  __builtin_unreachable();
 }
 
 void _kill(int pid, int sig) {
