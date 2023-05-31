@@ -45,6 +45,10 @@ void TIM1_UP_IRQHandler(void)
 		cnt &= 0x7FFF;
 		TIM1::INTFR::rw_mem_device() = ~(TIM1::INTFR::UIF::mask);
 	}
+	else
+	{
+		printf("bad up\n");
+	}
 }
 }
 
@@ -92,8 +96,8 @@ int main(void)
 	TIM1::DMAINTENR::merge_write<TIM1::DMAINTENR::CC1IE, 1>()
 						   .with<TIM1::DMAINTENR::UIE, 1>()
 						   .done();
-	PFIC::IENR2::merge_write<PFIC::IENR2::TIM1_CC, 1>()
-					   .with<PFIC::IENR2::TIM1_UP, 1>()
+	PFIC::IENR2::merge_write<PFIC::IENR2::TIM1_CC, 1>() // capture isr
+					   .with<PFIC::IENR2::TIM1_UP, 1>() // overflow isr
 					   .done();
 	
     debug::WaitForDebuggerToAttach();
