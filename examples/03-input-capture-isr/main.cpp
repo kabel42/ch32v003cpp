@@ -77,12 +77,10 @@ int main(void)
     TIM1::PSC::PSCfield::write<47>(); // 48MHz/(47+1) -> 1µs resolution
 
 	// CC1 -> D2, CC2 -> D2
-    TIM1::CHCTLR1_Input::merge_write<TIM1::CHCTLR1_Input::IC1F, 0>()
+    TIM1::CHCTLR1_Input::merge_write<TIM1::CHCTLR1_Input::IC1F, 3>() // only generate interrupt after 8 consecutive samples?
 	                           .with<TIM1::CHCTLR1_Input::CC1S, 1>()
-							   .with<TIM1::CHCTLR1_Input::IC2F, 0>()
-							   .with<TIM1::CHCTLR1_Input::CC2S, 2>()
-							   .with<TIM1::CHCTLR1_Input::IC1F, 3>() // only generate interrupt after 8 consecutive samples?
 							   .with<TIM1::CHCTLR1_Input::IC2F, 3>()
+							   .with<TIM1::CHCTLR1_Input::CC2S, 2>()
 							   .done();
 
     TIM1::CCER::merge_write<TIM1::CCER::CC1E, 0>() // ignored if input
