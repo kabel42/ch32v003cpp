@@ -92,7 +92,6 @@ int main(void)
 	TIM1::DMAINTENR::merge_write<TIM1::DMAINTENR::CC1IE, 1>()
 						   .with<TIM1::DMAINTENR::UIE, 1>()
 						   .done();
-    PFIC::IENR2::TIM1_CC::write<1>();
 	PFIC::IENR2::merge_write<PFIC::IENR2::TIM1_CC, 1>()
 					   .with<PFIC::IENR2::TIM1_UP, 1>()
 					   .done();
