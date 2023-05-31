@@ -85,9 +85,9 @@ int main(void)
 							   .with<TIM1::CHCTLR1_Input::IC2F, 3>()
 							   .done();
 
-    TIM1::CCER::merge_write<TIM1::CCER::CC1E, 1>()
+    TIM1::CCER::merge_write<TIM1::CCER::CC1E, 0>() // ignored if input
 					  .with<TIM1::CCER::CC1P, 0>()
-	                  .with<TIM1::CCER::CC2E, 1>()
+	                  .with<TIM1::CCER::CC2E, 0>() // ignored if input
 					  .with<TIM1::CCER::CC2P, 1>().done();
 
     TIM1::CTLR1::merge_write<TIM1::CTLR1::CEN, 1>().done(); // CAPLVL: indicate double-edge
