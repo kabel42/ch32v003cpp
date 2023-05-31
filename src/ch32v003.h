@@ -2061,23 +2061,37 @@ namespace Clock
     static uint32_t ticksPerUs = 3;
     static inline void init(bool pll)
     {
-        PFIC::STK_CTLR::merge_write<PFIC::STK_CTLR::STE, 1>().with<PFIC::STK_CTLR::STCLK, 1>().done();
-        RCC::CFGR0::merge_write<RCC::CFGR0::SW, 0>().with<RCC::CFGR0::HPRE, 0>().with<RCC::CFGR0::PLLSRC, 0>().done();
+        PFIC::STK_CTLR::merge_write<PFIC::STK_CTLR::STE, 1>()
+                              .with<PFIC::STK_CTLR::STCLK, 1>()
+                              .done();
+        RCC::CFGR0::merge_write<RCC::CFGR0::SW, 0>()
+                          .with<RCC::CFGR0::HPRE, 0>()
+                          .with<RCC::CFGR0::PLLSRC, 0>()
+                          .done();
         if (pll)
         {
-            RCC::CTLR::merge_write<RCC::CTLR::HSION, 1>().with<RCC::CTLR::HSITRIM, 0x10>().with<RCC::CTLR::PLLON, 1>().done();
+            RCC::CTLR::merge_write<RCC::CTLR::HSION, 1>()
+                             .with<RCC::CTLR::HSITRIM, 0x10>()
+                             .with<RCC::CTLR::PLLON, 1>()
+                             .done();
             FLASH::ACTLR::LATENCY::write<1>();
-            RCC::INTR::merge_write<RCC::INTR::LSIRDYC, 1>().with<RCC::INTR::HSIRDYC, 1>().with<RCC::INTR::HSERDYC, 1>().with<RCC::INTR::PLLRDYC, 1>().with<RCC::INTR::CSSC, 1>().done();
-            while (RCC::CTLR::PLLRDY::read() == 0)
-                ;
+            RCC::INTR::merge_write<RCC::INTR::LSIRDYC, 1>()
+                             .with<RCC::INTR::HSIRDYC, 1>()
+                             .with<RCC::INTR::HSERDYC, 1>()
+                             .with<RCC::INTR::PLLRDYC, 1>()
+                             .with<RCC::INTR::CSSC, 1>()
+                             .done();
+            while (RCC::CTLR::PLLRDY::read() == 0);
             RCC::CFGR0::SW::write<0b10>();
-            while (RCC::CFGR0::SWS::read() != 0b10)
-                ;
+            while (RCC::CFGR0::SWS::read() != 0b10);
             ticksPerUs = 48;
         }
         else
         {
-            RCC::CTLR::merge_write<RCC::CTLR::HSION, 1>().with<RCC::CTLR::HSITRIM, 0x10>().with<RCC::CTLR::PLLON, 0>().done();
+            RCC::CTLR::merge_write<RCC::CTLR::HSION, 1>()
+                             .with<RCC::CTLR::HSITRIM, 0x10>()
+                             .with<RCC::CTLR::PLLON, 0>()
+                             .done();
             FLASH::ACTLR::LATENCY::write<0>();
             ticksPerUs = 24;
         }
