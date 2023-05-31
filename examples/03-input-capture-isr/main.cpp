@@ -80,14 +80,17 @@ int main(void)
     TIM1::CHCTLR1_Input::merge_write<TIM1::CHCTLR1_Input::IC1F, 0>()
 	                           .with<TIM1::CHCTLR1_Input::CC1S, 1>()
 							   .with<TIM1::CHCTLR1_Input::IC2F, 0>()
-							   .with<TIM1::CHCTLR1_Input::CC2S, 2>().done();
+							   .with<TIM1::CHCTLR1_Input::CC2S, 2>()
+							   .with<TIM1::CHCTLR1_Input::IC1F, 3>() // only generate interrupt after 8 consecutive samples?
+							   .with<TIM1::CHCTLR1_Input::IC2F, 3>()
+							   .done();
 
     TIM1::CCER::merge_write<TIM1::CCER::CC1E, 1>()
 					  .with<TIM1::CCER::CC1P, 0>()
 	                  .with<TIM1::CCER::CC2E, 1>()
 					  .with<TIM1::CCER::CC2P, 1>().done();
 
-    TIM1::CTLR1::CEN::write<1>();
+    TIM1::CTLR1::merge_write<TIM1::CTLR1::CEN, 1>().done(); // CAPLVL: indicate double-edge
 
     // enable IRQ
     PFIC::IENR2::TIM1_CC::write<1>();
