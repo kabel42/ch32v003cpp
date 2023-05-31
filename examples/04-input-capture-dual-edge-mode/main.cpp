@@ -6,6 +6,7 @@ using namespace cppreg;
 volatile uint32_t captureVals[queuelen];
 volatile size_t read = 0;
 volatile size_t write = 0;
+volatile uint16_t cnt = 0;
 
 extern "C"
 {
@@ -16,7 +17,7 @@ void TIM1_CC_IRQHandler(void)
     if(TIM1::INTFR::CC1IF::read())
 	{
 		// get capture
-		captureVals[write++] = TIM1::CH1CVR::combined::read(); // capture value
+		captureVals[write++] = TIM1::CH1CVR::value::read() | (cnt<<16) | ((uint64_t)TIM1::CH1CVR::level::read())<<31; // capture value
 		if (write == queuelen)
 		{
 			write = 0;
@@ -25,13 +26,24 @@ void TIM1_CC_IRQHandler(void)
         if(TIM1::INTFR::CC1OF::read())
 		{
 			// clear
-            TIM1::INTFR::CC1OF::write<0>();
+            //TIM1::INTFR::CC1OF::write<0>();
+			TIM1::INTFR::rw_mem_device() = ~(TIM1::INTFR::CC1OF::mask);
 			printf("OF\n");
 		}
 	}
 	else
 	{
 		printf("badtrigger\n");
+	}
+}
+void TIM1_UP_IRQHandler(void) __attribute__((interrupt));
+void TIM1_UP_IRQHandler(void)
+{
+	if(TIM1::INTFR::UIF::read())
+	{
+		cnt++;
+		cnt &= 0x7FFF;
+		TIM1::INTFR::rw_mem_device() = ~(TIM1::INTFR::UIF::mask);
 	}
 }
 }
@@ -53,6 +65,7 @@ int main(void)
     RCC::APB2PRSTR::TIM1RST::write<1>();
     RCC::APB2PRSTR::TIM1RST::write<0>();
 
+	// D2 input floating
 	GPIOD::CFGLR::MODE2::write<GPIO::GPIO_CFGLR_IN_FLOAT>();
 
 	// TIM1 overflow
@@ -60,7 +73,7 @@ int main(void)
 	// TIM1 prescaler
     TIM1::PSC::PSCfield::write<47>(); // 48MHz/(47+1) -> 1µs resolution
 
-	// CC1 -> D2, CC2 -> D2
+	// CC1 -> D2
     TIM1::CHCTLR1_Input::merge_write<TIM1::CHCTLR1_Input::IC1F, 3>() // only generate interrupt after 8 consecutive samples?
 	                           .with<TIM1::CHCTLR1_Input::CC1S, 3>() // IC1 mapped to TRC
 							   .done();
@@ -76,9 +89,13 @@ int main(void)
 			           .done();
 
     // enable IRQ
-    PFIC::IENR2::TIM1_CC::write<1>();
 	TIM1::DMAINTENR::merge_write<TIM1::DMAINTENR::CC1IE, 1>()
+						   .with<TIM1::DMAINTENR::UIE, 1>()
 						   .done();
+    PFIC::IENR2::TIM1_CC::write<1>();
+	PFIC::IENR2::merge_write<PFIC::IENR2::TIM1_CC, 1>()
+					   .with<PFIC::IENR2::TIM1_UP, 1>()
+					   .done();
 	
     debug::WaitForDebuggerToAttach();
     printf("Hi\n");
@@ -86,8 +103,8 @@ int main(void)
     {
 		if (read != write)
 		{
-			uint32_t val = captureVals[read++];
-			printf("capture %ld %lu\n", val >> 16, val & 0xFFFF);
+			auto val = captureVals[read++];
+			printf("capture %lu %lu\n", val >> 31, val & 0x7FFFFFFF);
 			if (read == queuelen)
 			{
 				read = 0;
