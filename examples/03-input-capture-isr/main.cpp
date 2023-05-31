@@ -16,7 +16,8 @@ void TIM1_CC_IRQHandler(void)
     if(TIM1::INTFR::CC1IF::read())
 	{
 		// get capture
-		captureVals[write++] = 0x00010000 | TIM1::CH1CVR::CH1CVRfield::read(); // capture valur
+		captureVals[write++] = 0x00010000 | TIM1::CH1CVR::value::read(); // capture valur
+		//captureVals[write++] = TIM1::CH1CVR::combined::read(); // capture value
 		if (write == queuelen)
 		{
 			write = 0;
@@ -33,7 +34,7 @@ void TIM1_CC_IRQHandler(void)
     else if(TIM1::INTFR::CC2IF::read())
 	{
 		// get capture
-		captureVals[write++] = TIM1::CH2CVR::CH2CVRfield::read(); // capture valur
+		captureVals[write++] = TIM1::CH2CVR::value::read(); // capture value
 		if (write == queuelen)
 		{
 			write = 0;
@@ -62,7 +63,8 @@ int main(void)
 
 	// set GPIOC[0,1] as output
     GPIOC::CFGLR::merge_write<GPIOC::CFGLR::MODE0, GPIO::GPIO_CFGLR_OUT_10Mhz_PP>()
-		                .with<GPIOC::CFGLR::MODE1, GPIO::GPIO_CFGLR_OUT_10Mhz_PP>().done();
+		                .with<GPIOC::CFGLR::MODE1, GPIO::GPIO_CFGLR_OUT_10Mhz_PP>()
+						.done();
 
 	// enable and reset TIM1
     RCC::APB2PCENR::TIM1EN::write<1>();
@@ -83,17 +85,21 @@ int main(void)
 							   .with<TIM1::CHCTLR1_Input::CC2S, 2>()
 							   .done();
 
-    TIM1::CCER::merge_write<TIM1::CCER::CC1E, 0>() // ignored if input
-					  .with<TIM1::CCER::CC1P, 0>()
-	                  .with<TIM1::CCER::CC2E, 0>() // ignored if input
-					  .with<TIM1::CCER::CC2P, 1>().done();
+    TIM1::CCER::merge_write<TIM1::CCER::CC1E, 1>() // enable channel
+					  .with<TIM1::CCER::CC1P, 0>() // invert polarity
+	                  .with<TIM1::CCER::CC2E, 1>()
+					  .with<TIM1::CCER::CC2P, 1>()
+					  .done();
 
-    TIM1::CTLR1::merge_write<TIM1::CTLR1::CEN, 1>().done(); // CAPLVL: indicate double-edge
+    TIM1::CTLR1::merge_write<TIM1::CTLR1::CEN, 1>()
+					   .with<TIM1::CTLR1::TMR_CAP_LVL_EN, 1>() // CAPLVL: indicate double-edge
+			           .done();
 
     // enable IRQ
     PFIC::IENR2::TIM1_CC::write<1>();
 	TIM1::DMAINTENR::merge_write<TIM1::DMAINTENR::CC1IE, 1>()
-	                       .with<TIM1::DMAINTENR::CC2IE, 1>().done();
+	                       .with<TIM1::DMAINTENR::CC2IE, 1>()
+						   .done();
 	
     debug::WaitForDebuggerToAttach();
     printf("Hi\n");

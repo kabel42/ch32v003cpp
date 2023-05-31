@@ -956,19 +956,27 @@ namespace TIM1
     };
     struct CH1CVR : PackedRegister<TIM1_pack, RegBitSize::b32, 52 * 8> // capture/compare register 1
     {
-        using CH1CVRfield = Field<CH1CVR, 16, 0, read_write>; // Capture/Compare 1 value
+        using value = Field<CH1CVR, 16, 0, read_write>; // Capture/Compare 1 value
+        using level = Field<CH1CVR, 1, 16, read_only>;
+        using combined = Field<CH1CVR, 17, 0, read_only>;
     };
     struct CH2CVR : PackedRegister<TIM1_pack, RegBitSize::b32, 56 * 8> // capture/compare register 2
     {
-        using CH2CVRfield = Field<CH2CVR, 16, 0, read_write>; // Capture/Compare 2 value
+        using value = Field<CH2CVR, 16, 0, read_write>; // Capture/Compare 2 value
+        using level = Field<CH2CVR, 1, 16, read_only>;
+        using combined = Field<CH2CVR, 17, 0, read_only>;
     };
     struct CH3CVR : PackedRegister<TIM1_pack, RegBitSize::b32, 60 * 8> // capture/compare register 3
     {
-        using CH3CVRfield = Field<CH3CVR, 16, 0, read_write>; // Capture/Compare value
+        using value = Field<CH3CVR, 16, 0, read_write>; // Capture/Compare 3 value
+        using level = Field<CH3CVR, 1, 16, read_only>;
+        using combined = Field<CH3CVR, 17, 0, read_only>;
     };
     struct CH4CVR : PackedRegister<TIM1_pack, RegBitSize::b32, 64 * 8> // capture/compare register 4
     {
-        using CH4CVRfield = Field<CH4CVR, 16, 0, read_write>; // Capture/Compare value
+        using value = Field<CH4CVR, 16, 0, read_write>; // Capture/Compare 4 value
+        using level = Field<CH4CVR, 1, 16, read_only>;
+        using combined = Field<CH4CVR, 17, 0, read_only>;
     };
     struct BDTR : PackedRegister<TIM1_pack, RegBitSize::b32, 68 * 8> // break and dead-time register
     {
