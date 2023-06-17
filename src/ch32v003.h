@@ -2057,7 +2057,7 @@ namespace ADC
         EXTSEL_TIM2_CH2  = 0b101,
         EXTSEL_PD3_PC2   = 0b110,
         EXTSEL_SWSTART   = 0b111,
-    } ADC_CTLR2_EXTSEL;
+    } ADC_CTLR2_EXTSEL_TypeDef;
 }
 
 namespace GPIO
@@ -2079,7 +2079,30 @@ namespace GPIO
         GPIO_CFGLR_OUT_10Mhz_AF_OD = 13,
         GPIO_CFGLR_OUT_2Mhz_AF_OD = 14,
         GPIO_CFGLR_OUT_50Mhz_AF_OD = 15,
-    } GPIO_CFGLR_PIN_MODE_Typedef;
+    } GPIO_CFGLR_PIN_MODE_TypeDef;
+}
+
+namespace PWR
+{
+    typedef enum
+    {
+        DIV0 = 0b0000,
+        DIV1 = 0b0001,
+        DIV2 = 0b0010,
+        DIV4 = 0b0011,
+        DIV8 = 0b0100,
+        DIV16 = 0b0101,
+        DIV32 = 0b0110,
+        DIV64 = 0b0111,
+        DIV128 = 0b1000,
+        DIV256 = 0b1001,
+        DIV512 = 0b1010,
+        DIV1024 = 0b1011,
+        DIV2048 = 0b1100,
+        DIV4096 = 0b1101,
+        DIV10240 = 0b1110,
+        DIV61440 = 0b1111,
+    } PWR_AWUWR_AWUPSC_TypeDef;
 }
 
 namespace Clock
@@ -2160,6 +2183,15 @@ namespace debug
     }
 } // namespace debug
 
+/********************************** (C) COPYRIGHT  *******************************
+ * File Name          : core_riscv.h
+ * Author             : WCH
+ * Version            : V1.0.0
+ * Date               : 2022/08/08
+ * Description        : RISC-V Core Peripheral Access Layer Header File
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * SPDX-License-Identifier: Apache-2.0
+ *******************************************************************************/
 extern "C"
 {
 /*********************************************************************
@@ -2193,6 +2225,54 @@ static inline void __disable_irq()
   result &= ~0x88;
   __asm volatile ("csrw mstatus, %0" : : "r" (result) );
 }
+
+/*********************************************************************
+ * @fn      __NOP
+ *
+ * @brief   nop
+ *
+ * @return  none
+ */
+static inline void __NOP()
+{
+  __asm volatile ("nop");
+}
+
+/*********************************************************************
+ * @fn       __WFI
+ *
+ * @brief   Wait for Interrupt
+ *
+ * @return  none
+ */
+__attribute__( ( always_inline ) ) static inline void __WFI(void)
+{
+  //NVIC->SCTLR &= ~(1<<3);   // wfi
+  PFIC::SCTLR::WFITOWFE::set();
+  asm volatile ("wfi");
+}
+
+/*********************************************************************
+ * @fn       __WFE
+ *
+ * @brief   Wait for Events
+ *
+ * @return  none
+ */
+__attribute__( ( always_inline ) ) static inline void __WFE(void)
+{
+  //t = NVIC->SCTLR;
+  auto t = PFIC::SCTLR::SETEVENT::read();
+  //NVIC->SCTLR |= (1<<3)|(1<<5);     // (wfi->wfe)+(__sev)
+  PFIC::SCTLR::merge_write<PFIC::SCTLR::WFITOWFE, 1>()
+                     .with<PFIC::SCTLR::SETEVENT,1>()
+                     .done();
+  //NVIC->SCTLR = (NVIC->SCTLR & ~(1<<5)) | ( t & (1<<5));
+  PFIC::SCTLR::SETEVENT::write(t);
+  asm volatile ("wfi");
+  asm volatile ("wfi");
+}
+
 }
 
 #endif
