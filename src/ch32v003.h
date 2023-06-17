@@ -2145,29 +2145,37 @@ namespace Clock
             ticksPerUs = 24;
         }
     }
-    static inline uint32_t getSystick()
+    __attribute__( ( always_inline ) ) static inline uint32_t getSystick()
     {
         return PFIC::STK_CNTL::CNTL::read();
     }
-    static inline void delayTicks(uint32_t n)
+    __attribute__( ( always_inline ) ) static inline void delayTicks(uint32_t n)
     {
         uint32_t targend = getSystick() + n;
         while (((int32_t)(getSystick() - targend)) < 0)
             ;
     }
-    static inline void delayUntil(uint32_t *last, uint32_t diff)
+    __attribute__( ( always_inline ) ) static inline void delayUntil(uint32_t *last, uint32_t diff)
     {
         *last += diff;
         while (((int32_t)(getSystick() - *last)) < 0)
             ;
     }
-    static inline uint32_t msToTicks(uint32_t ms)
+    __attribute__( ( always_inline ) ) static inline uint32_t msToTicks(uint32_t ms)
     {
         return ms * ticksPerUs * 1000;
     }
-    static inline uint32_t usToTicks(uint32_t us)
+    __attribute__( ( always_inline ) ) static inline uint32_t usToTicks(uint32_t us)
     {
         return us * ticksPerUs;
+    }
+    __attribute__( ( always_inline ) ) static inline void delay_ms(uint32_t ms)
+    {
+        delayTicks(msToTicks(ms));
+    }
+    __attribute__( ( always_inline ) ) static inline void delay_us(uint32_t us)
+    {
+        delayTicks(usToTicks(us));
     }
 } // namespace Clock
 
@@ -2273,6 +2281,33 @@ __attribute__( ( always_inline ) ) static inline void __WFE(void)
   asm volatile ("wfi");
 }
 
+__attribute__( ( always_inline ) ) static inline void sleep_wfi(void)
+{
+    PWR::CTLR::PDDS::clear();
+	PFIC::SCTLR::SLEEPDEEP::clear();
+    __WFI();
+}
+
+__attribute__( ( always_inline ) ) static inline void sleep_wfe(void)
+{
+    PWR::CTLR::PDDS::clear();
+	PFIC::SCTLR::SLEEPDEEP::clear();
+    __WFE();
+}
+
+__attribute__( ( always_inline ) ) static inline void sleep_deep_wfi(void)
+{
+    PWR::CTLR::PDDS::set();
+	PFIC::SCTLR::SLEEPDEEP::set();
+    __WFI();
+}
+
+__attribute__( ( always_inline ) ) static inline void sleep_deep_wfe(void)
+{
+    PWR::CTLR::PDDS::set();
+	PFIC::SCTLR::SLEEPDEEP::set();
+    __WFE();
+}
 }
 
 #endif
