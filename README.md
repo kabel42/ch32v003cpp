@@ -4,4 +4,7 @@ trying to create a nice abstraction for wch [ch32v003](http://www.wch-ic.com/pro
 works well with [minichlink](https://github.com/cnlohr/ch32v003fun/tree/master/minichlink)
 
 TODO:
-- use c++ startup from [five-embeddeb](https://github.com/five-embeddev/riscv-scratchpad/tree/master/baremetal-startup-cxx/src)
+- more examples
+- more enums
+- try to force use of enums for some fields (things like GPIO mode field)
+- maybe use c++ startup from [five-embeddeb](https://github.com/five-embeddev/riscv-scratchpad/tree/master/baremetal-startup-cxx/src)
