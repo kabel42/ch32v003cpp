@@ -21,9 +21,9 @@ int main(void)
 	ADC1::RSQR1::L::write<0>();
 	ADC1::RSQR3::SQ1::write<2>(); // 2-7, 2 - A2: C4; 0/1 - A2/A1: ExtOsc
 
-	ADC1::SAMPTR2_CHARGE2::SMP2_TKCG2::write<7>();
+	ADC1::SAMPTR2_CHARGE2::SMP2_TKCG2::write<ADC::SAMPL_TIME_241>();
 
-	ADC1::CTLR2::EXTSEL::write<0b111>();
+	ADC1::CTLR2::EXTSEL::write<ADC::EXTSEL_SWSTART>();
 	ADC1::CTLR2::ADON::write<1>();
 	while(ADC1::CTLR2::ADON::read() == 0)
 		printf(".");

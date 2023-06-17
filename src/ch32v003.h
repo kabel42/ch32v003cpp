@@ -2034,6 +2034,32 @@ namespace PFIC
     };
 } // namespace PFIC
 
+namespace ADC
+{
+    typedef enum
+    {
+        SAMPL_TIME_3   = 0b000,
+        SAMPL_TIME_9   = 0b001,
+        SAMPL_TIME_15  = 0b010,
+        SAMPL_TIME_30  = 0b011,
+        SAMPL_TIME_43  = 0b100,
+        SAMPL_TIME_57  = 0b101,
+        SAMPL_TIME_73  = 0b110,
+        SAMPL_TIME_241 = 0b111,
+    } ADC_SAMPTR_TypeDef;
+    typedef enum
+    {
+        EXTSEL_TIM1_TRGO = 0b000,
+        EXTSEL_TIM1_CH1  = 0b001,
+        EXTSEL_TIM1_CH2  = 0b010,
+        EXTSEL_TIM2_TRGO = 0b011,
+        EXTSEL_TIM2_CH1  = 0b100,
+        EXTSEL_TIM2_CH2  = 0b101,
+        EXTSEL_PD3_PC2   = 0b110,
+        EXTSEL_SWSTART   = 0b111,
+    } ADC_CTLR2_EXTSEL;
+}
+
 namespace GPIO
 {
     typedef enum
