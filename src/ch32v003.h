@@ -2108,6 +2108,7 @@ namespace PWR
 namespace Clock
 {
     static uint32_t ticksPerUs = 3;
+    static uint32_t freq = 24000000;
     static inline void init(bool pll)
     {
         PFIC::STK_CTLR::merge_write<PFIC::STK_CTLR::STE, 1>()
@@ -2134,6 +2135,7 @@ namespace Clock
             RCC::CFGR0::SW::write<0b10>();
             while (RCC::CFGR0::SWS::read() != 0b10);
             ticksPerUs = 48;
+            freq = 48000000;
         }
         else
         {
@@ -2143,6 +2145,7 @@ namespace Clock
                              .done();
             FLASH::ACTLR::LATENCY::write<0>();
             ticksPerUs = 24;
+            freq = 24000000;
         }
     }
     __attribute__( ( always_inline ) ) static inline uint32_t getSystick()
@@ -2190,6 +2193,30 @@ namespace debug
             ;
     }
 } // namespace debug
+
+namespace UART
+{
+    __attribute__( ( always_inline ) ) static inline void init(const uint32_t baud)
+    {
+        RCC::APB2PCENR::IOPDEN::set();
+        RCC::APB2PCENR::USART1EN::set();
+        GPIOD::CFGLR::MODE5::write<GPIO::GPIO_CFGLR_OUT_2Mhz_AF_PP>();
+        USART1::CTLR1::TE::write<1>();
+        
+        static const uint32_t BAUD = baud;
+        static const uint32_t FCLK = Clock::freq;
+        static const uint16_t USARTDIV = (FCLK+BAUD/2)/BAUD;
+        USART1::BRR::rw_mem_device() = USARTDIV;
+
+        USART1::CTLR1::UE::set();
+    }
+
+    __attribute__( ( always_inline ) ) static inline void putc(const uint8_t c)
+    {
+        while(USART1::STATR::TXE::read() == 0);
+        USART1::DATAR::DR::write(c);
+    }
+}
 
 /********************************** (C) COPYRIGHT  *******************************
  * File Name          : core_riscv.h
