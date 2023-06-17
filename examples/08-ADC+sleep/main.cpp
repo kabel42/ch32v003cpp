@@ -27,8 +27,8 @@ int main(void)
 						.with<GPIOC::CFGLR::MODE6, GPIO::GPIO_CFGLR_IN_ANALOG>()
 						.with<GPIOC::CFGLR::MODE7, GPIO::GPIO_CFGLR_IN_ANALOG>()
 						.done();
-	GPIOD::CFGLR::merge_write<GPIOD::CFGLR::MODE0, GPIO::GPIO_CFGLR_IN_PUPD>()
-						.with<GPIOD::CFGLR::MODE1, GPIO::GPIO_CFGLR_IN_ANALOG>()
+	GPIOD::CFGLR::merge_write<GPIOD::CFGLR::MODE0, GPIO::GPIO_CFGLR_OUT_10Mhz_PP>()
+						.with<GPIOD::CFGLR::MODE1, GPIO::GPIO_CFGLR_IN_PUPD>()
 						.with<GPIOD::CFGLR::MODE2, GPIO::GPIO_CFGLR_IN_ANALOG>()
 						.with<GPIOD::CFGLR::MODE3, GPIO::GPIO_CFGLR_IN_ANALOG>()
 						.with<GPIOD::CFGLR::MODE4, GPIO::GPIO_CFGLR_IN_ANALOG>()
@@ -45,7 +45,7 @@ int main(void)
 	ADC1::RSQR1::L::write<0>();
 	ADC1::RSQR3::SQ1::write<8>(); // 2-7, A2-A7; A2: C4, ...; 0/1 - A2/A1: ExtOsc; 8 - Vref: 1.2V
 
-	ADC1::SAMPTR2_CHARGE2::SMP2_TKCG2::write<ADC::SAMPL_TIME_241>();
+	ADC1::SAMPTR2_CHARGE2::SMP2_TKCG2::write<ADC::SAMPL_TIME_3>();
 
 	ADC1::CTLR2::EXTSEL::write<ADC::EXTSEL_SWSTART>();
 	ADC1::CTLR2::ADON::write<1>();
@@ -71,16 +71,16 @@ int main(void)
 	PWR::AWUAPR::AWUAPRfield::write<13>(); // autowakeup 1Hz
 	PWR::AWUCSR::AWUEN::set();
 
-	PWR::CTLR::PDDS::set();
-	PFIC::SCTLR::SLEEPDEEP::set();
-
     while (true)
     {
-			ADC1::CTLR2::SWSTART::write<1>();
-			while(ADC1::STATR::EOC::read() == 0);
-			uint32_t Vref = ((1200*1024)/ADC1::RDATAR::DATA::read());
-			printf("VCC: %lu mV\n", Vref);
-			__WFE();
+		GPIOD::BCR::BR0::write<1>();
+		ADC1::CTLR2::SWSTART::write<1>();
+		while(ADC1::STATR::EOC::read() == 0);
+		uint32_t Vref = ((1200*1024)/ADC1::RDATAR::DATA::read());
+		printf("VCC: %lu mV\n", Vref);
+		GPIOD::BSHR::BS0::write<1>();
+
+		sleep_deep_wfe();
     }
 	while(1);
 }
