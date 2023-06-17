@@ -2248,7 +2248,7 @@ static inline void __NOP()
 __attribute__( ( always_inline ) ) static inline void __WFI(void)
 {
   //NVIC->SCTLR &= ~(1<<3);   // wfi
-  PFIC::SCTLR::WFITOWFE::set();
+  PFIC::SCTLR::WFITOWFE::clear();
   asm volatile ("wfi");
 }
 
