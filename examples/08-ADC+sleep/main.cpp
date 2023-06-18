@@ -42,10 +42,9 @@ int main(void)
 	RCC::APB2PRSTR::ADC1RST::write<1>();
 	RCC::APB2PRSTR::ADC1RST::write<0>();
 
-	ADC1::RSQR1::L::write<0>();
-	ADC1::RSQR3::SQ1::write<8>(); // 2-7, A2-A7; A2: C4, ...; 0/1 - A2/A1: ExtOsc; 8 - Vref: 1.2V
-
-	ADC1::SAMPTR2_CHARGE2::SMP2_TKCG2::write<ADC::SAMPL_TIME_3>();
+	ADC1::RSQR1::L::write<0>();   // converson chain length
+	ADC1::RSQR3::SQ1::write<8>(); // channel 2-7, A2-A7; A2: C4, ...; 0/1 - A2/A1: ExtOsc; 8 - Vref: 1.2V
+	ADC1::SAMPTR2_CHARGE2::SMP8_TKCG8::write<ADC::SAMPL_TIME_241>(); // sample time
 
 	ADC1::CTLR2::EXTSEL::write<ADC::EXTSEL_SWSTART>();
 	ADC1::CTLR2::ADON::write<1>();
@@ -68,18 +67,33 @@ int main(void)
 	EXTI::RTENR::TR9::set(); // enable event on falling edge
 
 	PWR::AWUPSC::AWUPSCfield::write<PWR::DIV10240>(); // prescale to 64 Hz
-	PWR::AWUAPR::AWUAPRfield::write<13>(); // autowakeup 1Hz
+	PWR::AWUAPR::AWUAPRfield::write<13>(); // autowakeup ~1 Hz
 	PWR::AWUCSR::AWUEN::set();
 
     while (true)
     {
+		// signal start of cycle
 		GPIOD::BCR::BR0::write<1>();
+
+		// enable ADC
+		ADC1::CTLR2::ADON::set();
+		while(ADC1::CTLR2::ADON::is_clear());
+
+		// start conversion
 		ADC1::CTLR2::SWSTART::write<1>();
 		while(ADC1::STATR::EOC::read() == 0);
+
+		// read value
 		uint32_t Vref = ((1200*1024)/ADC1::RDATAR::DATA::read());
-		printf("VCC: %lu mV\n", Vref);
+		//printf("VCC: %lu mV\n", Vref);
+
+		// put adc to sleep, ADC seems to not be clock gated
+		ADC1::CTLR2::ADON::clear();
+
+		// end of cycle
 		GPIOD::BSHR::BS0::write<1>();
 
+		// sleep
 		sleep_deep_wfe();
     }
 	while(1);
