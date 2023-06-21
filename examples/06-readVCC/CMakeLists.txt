@@ -19,7 +19,7 @@ target_compile_options(wch_demo PRIVATE
     -mabi=ilp32e
     -msmall-data-limit=0
     #-msave-restore
-    -Os
+    -Og
     -fmessage-length=0
     -fsigned-char
     -ffunction-sections

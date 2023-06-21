@@ -11,6 +11,39 @@
 			"group": "build",
 			"problemMatcher": [],
 			"detail": "CMake template build task"
+		},
+		{
+			"label": "flash",
+			"dependsOn": [
+				"build"
+			],
+			"command": "../../../ch32v003fun/minichlink/minichlink",
+			"args": [
+				"-w",
+				"build/wch_demo.bin",
+				"flash",
+				"-b",
+				"-G"
+			],
+			"isBackground": true,
+			"problemMatcher": {
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "Found WCH Link",
+					"endsPattern": "GDBServer Running",
+				},
+				"pattern": {
+					"regexp": ""
+				},
+			},
+		},
+		{
+			"label": "terminateDebug",
+			"type": "process",
+			"command": "${command:workbench.action.tasks.terminate}",
+			"args": [
+				"flash",
+			]
 		}
 	]
 }

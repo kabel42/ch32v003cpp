@@ -55,5 +55,4 @@ int main(void)
 			printf("Vcc:  %lu mV\n", ((vref*1024)/val));
 			Clock::delay_ms(1000);
     }
-	while(1);
 }
