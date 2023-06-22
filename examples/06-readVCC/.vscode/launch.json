@@ -15,7 +15,7 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "flash",
+            "preLaunchTask": "debug",
             "postDebugTask": "terminateDebug",
             "setupCommands": [
                 {

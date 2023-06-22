@@ -13,11 +13,11 @@
 			"detail": "CMake template build task"
 		},
 		{
-			"label": "flash",
+			"label": "debug",
 			"dependsOn": [
-				"build"
+				"CMake: build"
 			],
-			"command": "../../../ch32v003fun/minichlink/minichlink",
+			"command": "minichlink",
 			"args": [
 				"-w",
 				"build/wch_demo.bin",
@@ -39,11 +39,25 @@
 			},
 		},
 		{
+			"label": "flash",
+			"dependsOn": [
+				"CMake: build"
+			],
+			"command": "minichlink",
+			"args": [
+				"-w",
+				"build/wch_demo.bin",
+				"flash",
+				"-b",
+				"-T",
+			],
+		},
+		{
 			"label": "terminateDebug",
 			"type": "process",
 			"command": "${command:workbench.action.tasks.terminate}",
 			"args": [
-				"flash",
+				"debug",
 			]
 		}
 	]
