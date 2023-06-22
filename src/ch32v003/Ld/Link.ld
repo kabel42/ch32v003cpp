@@ -7,7 +7,8 @@ PROVIDE( _stack_size = __stack_size );
 MEMORY
 {
 	FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 16K
-	RAM (xrw)  : ORIGIN = 0x20000000, LENGTH = 2K
+	RAM (xrw)  : ORIGIN = 0x20000000, LENGTH = 2K - __stack_size
+  STACK(rw)  : ORIGIN = ORIGIN(RAM) + LENGTH(RAM), LENGTH = __stack_size
 }
 
 SECTIONS
@@ -144,14 +145,14 @@ SECTIONS
     PROVIDE( _end = _ebss);
 	PROVIDE( end = . );
 
-	.stack ORIGIN(RAM) + LENGTH(RAM) - __stack_size :
+	.stack :
 	{
 	    PROVIDE( _heap_end = . );
 	    . = ALIGN(4);
 	    PROVIDE(_susrstack = . );
 	    . = . + __stack_size;
 	    PROVIDE( _eusrstack = .);
-	} >RAM 
+	} >STACK
 	
 }
 
