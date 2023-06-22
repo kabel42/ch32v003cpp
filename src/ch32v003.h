@@ -87,6 +87,7 @@ namespace RCC
     };
     struct APB1PRSTR : PackedRegister<RCC_pack, RegBitSize::b32, 16 * 8> // APB1 peripheral reset register
     {
+        using TIM2RST = Field<APB1PRSTR, 1, 1, read_write>; // TIM2 timer reset
         using WWDGRST = Field<APB1PRSTR, 1, 11, read_write>; // Window watchdog reset
         using I2C1RST = Field<APB1PRSTR, 1, 21, read_write>; // I2C1 reset
         using PWRRST = Field<APB1PRSTR, 1, 28, read_write>;  // Power interface reset
