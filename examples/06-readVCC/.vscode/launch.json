@@ -22,11 +22,12 @@
                     "description": "Enable pretty-printing for gdb",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true,
-                }
+                },
             ],
             "miDebuggerPath": "riscv-none-elf-gdb",
             "miDebuggerServerAddress": "127.0.0.1:2000",
-            "internalConsoleOptions":"openOnSessionStart"
+            "internalConsoleOptions":"openOnSessionStart",
+            //"targetArchitecture": "riscv",
         }
     ]
 }

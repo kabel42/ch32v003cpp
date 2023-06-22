@@ -23,7 +23,8 @@
 				"build/wch_demo.bin",
 				"flash",
 				"-b",
-				"-G"
+				"-a",
+				"-G",
 			],
 			"isBackground": true,
 			"problemMatcher": {
