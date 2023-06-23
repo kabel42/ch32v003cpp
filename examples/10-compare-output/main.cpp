@@ -25,7 +25,7 @@ int main(void)
 	RCC::APB1PRSTR::TIM2RST::clear();
 
 	// TIM2 prescaler + autoreload
-    TIM2::PSC::PSCfield::write<>(Clock::usToTicks(10));
+    TIM2::PSC::PSCfield::write<>(Clock::usToTicks(10)-1);
 	TIM2::ATRLR::ATRLRfield::write<100>();
 
 	// TIM2 compare val
