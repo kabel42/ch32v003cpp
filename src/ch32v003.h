@@ -21,9 +21,9 @@ namespace PWR
     {
         using AWUEN = Field<AWUCSR, 1, 1, read_write>; // Automatic wake-up enable
     };
-    struct AWUAPR : PackedRegister<PWR_pack, RegBitSize::b32, 12 * 8> // Automatic wake window comparison value register
+    struct AWUWR : PackedRegister<PWR_pack, RegBitSize::b32, 12 * 8> // Automatic wake window comparison value register
     {
-        using AWUAPRfield = Field<AWUAPR, 6, 0, read_write>; // AWU window value
+        using AWUWRfield = Field<AWUWR, 6, 0, read_write>; // AWU window value
     };
     struct AWUPSC : PackedRegister<PWR_pack, RegBitSize::b32, 16 * 8> // Automatic wake-up prescaler register
     {
