@@ -43,7 +43,7 @@ int main(void)
 	EXTI::EVENR::MR9::set(); // enable events from auto-wareup events
 	EXTI::RTENR::TR9::set(); // enable event on falling edge
 
-	PWR::AWUPSC::AWUPSCfield::write<PWR::DIV10240>(); // prescale to 64 Hz
+	PWR::AWUPSC::AWUPSCfield::write<PWR::DIV10240>(); // prescale 128 kHz / 10240 = 12.5 Hz
 	PWR::AWUAPR::AWUAPRfield::write<13>(); // autowakeup 1Hz
 	PWR::AWUCSR::AWUEN::set();
 
