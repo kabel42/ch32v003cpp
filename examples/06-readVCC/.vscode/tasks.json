@@ -11,6 +11,54 @@
 			"group": "build",
 			"problemMatcher": [],
 			"detail": "CMake template build task"
+		},
+		{
+			"label": "debug",
+			"dependsOn": [
+				"CMake: build"
+			],
+			"command": "minichlink",
+			"args": [
+				"-w",
+				"build/wch_demo.bin",
+				"flash",
+				"-b",
+				"-a",
+				"-G",
+			],
+			"isBackground": true,
+			"problemMatcher": {
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "Found WCH Link",
+					"endsPattern": "GDBServer Running",
+				},
+				"pattern": {
+					"regexp": ""
+				},
+			},
+		},
+		{
+			"label": "flash",
+			"dependsOn": [
+				"CMake: build"
+			],
+			"command": "minichlink",
+			"args": [
+				"-w",
+				"build/wch_demo.bin",
+				"flash",
+				"-b",
+				"-T",
+			],
+		},
+		{
+			"label": "terminateDebug",
+			"type": "process",
+			"command": "${command:workbench.action.tasks.terminate}",
+			"args": [
+				"debug",
+			]
 		}
 	]
 }
