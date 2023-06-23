@@ -44,7 +44,7 @@ int main(void)
 	EXTI::RTENR::TR9::set(); // enable event on falling edge
 
 	PWR::AWUPSC::AWUPSCfield::write<PWR::DIV10240>(); // prescale 128 kHz / 10240 = 12.5 Hz
-	PWR::AWUAPR::AWUAPRfield::write<13>(); // autowakeup 1Hz
+	PWR::AWUAPR::AWUAPRfield::write<13>(); // autowakeup ~1 Hz
 	PWR::AWUCSR::AWUEN::set();
 
 	PWR::CTLR::PDDS::set();
